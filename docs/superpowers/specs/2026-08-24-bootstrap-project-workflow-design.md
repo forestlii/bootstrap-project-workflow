@@ -3,13 +3,13 @@
 ## 0. 状态
 
 - 日期：2026-08-24
-- 状态：待用户书面审核
+- 状态：已批准（用户于 2026-08-24 明确确认“审核通过”）
 - 首版平台：Windows
 - 发布目标：`forestlii/bootstrap-project-workflow` 私有 GitHub 仓库；成熟后由仓库所有者决定是否公开
 - 许可证：MIT
 - 首个试点：`C:\workspace\ai_project\codex\card-hero-skin-studio-windows`
 
-在本规格获批前，只允许修改本规格，不进入实现。
+本规格已经获批。实现必须先形成可审核的分阶段计划；产品边界或责任链发生变化时，返回本规格重新确认。
 
 ## 1. 产品目标
 
@@ -307,7 +307,7 @@ Edit .agent-workflow/source, then run sync-scaffolds.ps1.
 - Unity 2022.3 Windows 工具。
 - 已有 `AGENTS.md`、本地交接文档、技术规则、协议、黄金样例、devlog 和多组验证入口。
 - 没有 Claude 项目入口或两种运行时的项目 Skill。
-- 工作树当前有用户未提交的发布产物和 devlog 修改。
+- 早期审计曾发现用户未提交的发布产物和 devlog 修改；2026-08-24 制定实施计划时工作树为干净状态。实际接入前仍必须重新记录并保护当时的工作树基线。
 
 验收步骤：
 
