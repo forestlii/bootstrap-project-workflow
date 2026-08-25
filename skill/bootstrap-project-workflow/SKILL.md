@@ -1,13 +1,13 @@
 ---
 name: bootstrap-project-workflow
-description: Use when a Windows project needs a shared project workflow that Claude Code and Codex can both discover, especially before the project has .claude/CLAUDE.md or AGENTS.md.
+description: Use when a Windows project needs a shared Claude Code and Codex workflow, or when the user asks to “拆解项目”, “分析项目”, identify project frameworks, or split project knowledge into project Skills.
 ---
 
-# 初始化项目工作流
+# 初始化与拆解项目工作流
 
 ## 核心原则
 
-为现有 Windows 项目起草一份 Claude Code 与 Codex 共用的项目工作流。`.claude` 是唯一项目知识源；根目录 `AGENTS.md` 只作为 Codex 的薄入口。
+为现有 Windows 项目建立 Claude Code 与 Codex 共用的项目工作流，并在已有工作流的项目中按代码框架拆分项目 Skill。`.claude` 是唯一项目知识源；根目录 `AGENTS.md` 只作为 Codex 的薄入口。
 
 初次运行只允许生成两个文件：
 
@@ -16,7 +16,16 @@ description: Use when a Windows project needs a shared project workflow that Cla
 
 不要创建业务 Skill、构建系统、同步工具、锁文件或其他脚手架。
 
-## 强制流程
+## 选择工作模式
+
+- 用户要求“初始化项目工作流”“建立项目脚手架”，且项目尚无共同工作流时，进入“初始化模式”。
+- 用户说“拆解项目”“分析项目”“梳理代码框架”或“拆分项目 Skill”时自动触发本 Skill：
+  - 项目没有 `.claude/CLAUDE.md` 和 `AGENTS.md` 时，先进入“初始化模式”；
+  - 项目已有完整共同工作流时，进入“拆解模式”；
+  - 两个入口只存在一个时停止并报告，不自动补全、覆盖或迁移。
+- 无法唯一判断模式时，只问一个问题确认，不要同时执行两个模式。
+
+## 初始化模式
 
 ### 1. 确认环境和项目根目录
 
@@ -124,11 +133,62 @@ description: Use when a Windows project needs a shared project workflow that Cla
 
 报告实际创建的文件。不要自动运行构建、测试、格式验证、Git 提交或推送；这些动作需要负责人另行授权。
 
+## 拆解模式
+
+### 1. 读取共同工作流
+
+- 完整读取 `<project>/.claude/CLAUDE.md`。
+- 将根目录 `AGENTS.md` 仅视为 Codex 入口，不从中建立第二份项目知识。
+- 如果 `.claude/skills` 已存在，只读取各 `SKILL.md` 的 `name` 和 `description` 以识别已有边界；不要一次加载所有正文。
+
+### 2. 只读识别代码框架
+
+只读取识别顶层框架所需的高价值信息：
+
+- README、架构文档和项目清单；
+- 主要代码目录、入口和模块边界；
+- 框架之间明确存在的依赖关系；
+- 当前任务需要且能够由文件证实的团队规则。
+
+跳过依赖、缓存、构建产物和大型生成目录。不要运行构建、测试、格式化、安装或项目程序，也不要修改业务代码。
+
+按职责和知识边界拆分，不按每个目录机械创建 Skill。候选框架必须满足：职责相对独立、来源路径明确、会在后续任务中重复使用，并且单独读取比加载整个项目更有效。
+
+### 3. 展示拆分清单
+
+为每个候选项目 Skill 展示：
+
+- 名称；
+- 触发条件；
+- 覆盖范围；
+- 来源路径。
+
+同时列出暂不拆分的目录及原因。只展示候选清单，不创建目录或文件，然后停止等待负责人审核。
+
+### 4. 逐个起草项目 Skill
+
+候选清单获批后，只读取当前获批框架需要的来源文件，并逐个展示完整草稿：
+
+- 主文件为 `.claude/skills/<name>/SKILL.md`；
+- 只有内容确实需要时才提议 `examples.md` 或 `checklist.md`；
+- 一个 Skill 只覆盖一个清晰框架，不复制 `.claude/CLAUDE.md` 的共同规则；
+- `description` 写明真实任务触发条件，使 Claude Code 与 Codex 能按任务选择读取。
+
+展示草稿后停止。候选清单批准、继续分析或草稿审核都不构成写入授权。
+
+### 5. 获批后写入
+
+负责人必须明确批准准确文件列表后才能写入。只创建获批的 `.claude/skills/<name>` 目录和文件，不顺手修改共同工作流、其他 Skill 或业务代码。
+
+发生冲突、部分写入或工具错误时立即停止，如实报告已经产生的文件；不要自动清理或修复。
+
+写入后只报告实际创建或修改的文件。不要自动运行构建、测试、格式验证、Git 提交或推送。
+
 ## 明确禁止
 
 - 覆盖、合并、迁移或备份已有入口；
 - 复制两份项目工作流或项目 Skill 正文；
 - 根据项目类型注入预设 Unity、Unreal 或工具知识；
-- 自动创建业务 Skill；
+- 未经候选清单审核、草稿审核和写入授权自动创建业务 Skill；
 - 启动子代理或扩大分析、实施、验证范围；
 - 把“继续”“审核过设计”解释为写入或验证授权。
