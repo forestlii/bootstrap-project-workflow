@@ -1,4 +1,4 @@
 interface:
-  display_name: "初始化项目工作流"
-  short_description: "为 Windows 项目建立 Claude Code 与 Codex 共用的最小项目工作流"
-  default_prompt: "使用 $bootstrap-project-workflow 为当前 Windows 项目起草 Claude Code 与 Codex 共用工作流，并在写入前等待我的审核。"
+  display_name: "共用项目工作流"
+  short_description: "初始化、拆解和维护 Windows 项目的 Claude／Codex 共用规范与 Skill 入口"
+  default_prompt: "使用 $bootstrap-project-workflow 按当前请求初始化、拆解或接入维护项目规范；共用 .claude 正文，通过 .agents/skills 发现，保留既有定制并按已有授权执行。"
